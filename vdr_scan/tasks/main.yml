@@ -1,0 +1,55 @@
+---
+# tasks file for vdr_scan
+
+- name: Vdr service stopped to release the adapters
+  service:
+    name: vdr
+    state: stopped
+  register: vdr_status
+
+- name: Wait 300 seconds for VDR port 3000 to become closed on the host, don't start checking for 10 seconds
+  wait_for:
+    port: 3000
+    delay: 10
+    state: stopped
+
+- name: Assert vdr service status inactive
+  assert:
+    that:
+      - vdr_status.status.ActiveState == 'inactive'
+    msg: 'Vdr service must be stopped'
+    
+- name: Scan cat tv channels
+  command: '/usr/bin/scan -a {{ dvb_c_adapter_number }} -o vdr {{ cat_tv_freq_file }} -U'
+  register: dvb_c_scan_results
+  
+- name: Scan sat tv channels
+  command: '/usr/bin/scan -a {{ dvb_s_adapter_number }} -o vdr {{ sat_transp_file }} -U'
+  register: dvb_s_scan_results
+ 
+- name: Generate vdr channels from scanned results
+  template:
+    src: channels.conf.j2
+    dest: '{{ vdr_channels_conf_path }}'
+    backup: yes
+  
+- name: Check and assert {{ vdr_channels_conf_path }} content
+  include_role:
+    name: check_file_content
+  vars:
+    file_to_check: '{{ vdr_channels_conf_path }}'  
+    file_content_to_check: '{{ item }}'
+  with_items:
+    - ':[ Sprint ]'
+    - ':[ Bulsat ]'
+
+- name: Vdr start service to apply the new configuration
+  service:
+    name: vdr
+    state: started
+    
+- name: Wait 300 seconds for VDR port 3000 to become open on the host, don't start checking for 30 seconds
+  wait_for:
+    port: 3000
+    delay: 30
+  
