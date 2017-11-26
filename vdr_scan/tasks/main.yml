@@ -7,10 +7,10 @@
     state: stopped
   register: vdr_status
 
-- name: Wait 300 seconds for VDR port 3000 to become closed on the host, don't start checking for 10 seconds
+- name: Wait 300 seconds for VDR port 3000 to become closed on the host, don't start checking for 30 seconds
   wait_for:
     port: 3000
-    delay: 10
+    delay: 30
     state: stopped
 
 - name: Assert vdr service status inactive
@@ -23,8 +23,13 @@
   command: '/usr/bin/scan -a {{ dvb_c_adapter_number }} -o vdr {{ cat_tv_freq_file }} -U'
   register: dvb_c_scan_results
   
-- name: Scan sat tv channels
-  command: '/usr/bin/scan -a {{ dvb_s_adapter_number }} -o vdr {{ sat_transp_file }} -U'
+- name: Get generate VDR channels from KingOfSat
+  git:
+    repo: 'https://github.com/bmihovski/vdr-getchannels.git'
+    dest: /root/vdr_king_of_sat
+  
+- name: Run generate VDR channels from KingOfSat
+  shell: "cd /root/vdr_king_of_sat/; python getchannels.py -u -c bulsat.conf -l 39.0E -ot True"
   register: dvb_s_scan_results
  
 - name: Generate vdr channels from scanned results
