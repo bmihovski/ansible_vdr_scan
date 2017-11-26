@@ -11,11 +11,9 @@ Ansible 2.1
 Role Variables
 --------------
 
-sat_transp_file: /usr/share/dvb/dvb-s/Hellas-39.E
 cat_tv_freq_file: /usr/share/dvb/dvb-c/bg-Sprint
 vdr_channels_conf_path: /var/lib/vdr/channels.conf
 dvb_c_adapter_number: - ( dvb c adapter number )
-dvb_s_adapter_number: - ( dvb s adapter number )
 
 Dependencies
 ------------
