@@ -2,7 +2,7 @@
 # tasks file for vdr_scan
 
 - name: Vdr service stopped to release the adapters
-  shell: 'killall -9 vdr'
+  command: 'killall -9 vdr'
   ignore_errors: yes
 
 - name: Wait 300 seconds for VDR port 3000 to become closed on the host, don't start checking for 10 seconds

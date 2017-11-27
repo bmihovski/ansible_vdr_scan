@@ -4,6 +4,7 @@
 - name: Implement vdr scan sat and catv
   hosts: receiver1
   gather_facts: false
+  become: true
   roles:
     - vdr_scan
   vars:
