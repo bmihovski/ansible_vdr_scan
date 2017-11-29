@@ -1,0 +1,18 @@
+# oscam.services generated automatically by Streamboard OSCAM 1.20-unstable_svn SVN r11272
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.services.txt
+
+[sprint]
+caid                          = 0B00
+provid                        = 000000
+srvid                         = 05A0,15A4,05B4,05B4,05F0,1DEC,0438,0BE0,15A4,15B8,15CC,15E0,15F4,1784,16BC,1770,0834,0A00,1838,1860,19B4,19C8,1BE4,1C34,1C70,1C84,1C98,1CAC,1CD4,1D24,1D38,08C0,08D4,08FC,0A50,0C08,1608,1978,1D9C,0474,04B0,04EC,0500,0514,0528,0A64,0A78,0AB4,1720,0FF0,19A0,19DC,19F0,16F8,1A40,1A7C,1A90,1E28,1E3C
+
+[hbo]
+caid                          = 0B00
+provid                        = 000000
+srvid                         = 05A0,05F0,15A4,1590,15A4,0834,0438,0BE0,0604,0B40,15B8,15CC,15E0,15F4
+
+[diema]
+caid                          = 0B00
+provid                        = 000000
+srvid                         = 1B80,0640,1DD8,0AC8,1B94
+

@@ -1,0 +1,31 @@
+# oscam.user generated automatically by Streamboard OSCAM 1.20-unstable_svn SVN r11385
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.user.txt
+
+[account]
+user                          = vdr
+caid                          = 0B00,4AEE
+au                            = sprint,ceco2000serv
+emmreassembly                 = 0
+group                         = 1,2,3
+max_connections               = 10
+
+[account]
+user                          = multics
+pwd                           = 1DijLElj
+description                   = multics cloud
+uniq                          = 3
+au                            = 1
+emmreassembly                 = 0
+group                         = 1
+preferlocalcards              = 0
+max_connections               = 10
+
+[account]
+user                          = maca
+pwd                           = korgo123
+description                   = MCA AIR
+caid                          = 0B00
+sleep                         = 10
+group                         = 1,2,3
+max_connections               = 10
+

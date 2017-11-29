@@ -1,0 +1,44 @@
+# oscam.server generated automatically by Streamboard OSCAM 1.20-unstable_svn SVN r11390
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.server.txt
+
+[reader]
+label                         = sprint
+protocol                      = mouse
+device                        = /dev/ttyUSB0
+pincode                       = 0000
+autospeed                     = 0
+caid                          = 0B00
+ecmwhitelist                  = 0B00:67
+detect                        = cd
+group                         = 1
+emmcache                      = 2,1,2,0
+disablecrccws                 = 1
+
+[reader]
+label                         = multicsServ
+description                   = multics cloud
+protocol                      = cs357x
+device                        = magnetgroup.zapto.org,53880
+user                          = vdroreshak
+password                      = 1DijLElj
+caid                          = 4AEE
+group                         = 2
+dropbadcws                    = 1
+audisabled                    = 1
+
+[reader]
+label                         = ceco2000serv
+description                   = ceco2000 pleven sprint
+protocol                      = cccam
+device                        = 212.233.233.157,38000
+user                          = marin
+password                      = marinpass
+inactivitytimeout             = 30
+caid                          = 0B00
+ecmwhitelist                  = 0B00:67
+group                         = 3
+emmcache                      = 2,1,2,0
+cccversion                    = 2.1.3
+cccmaxhops                    = 0
+ccckeepalive                  = 1
+

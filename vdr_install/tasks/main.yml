@@ -1,0 +1,64 @@
+---
+# tasks file for vdr_install
+
+- name: Create VDR source dir
+  file:
+    path: '{{ vdr_target_src_dir }}'
+    state: directory
+    
+- name: Download and extract latest VDR
+  unarchive:
+    src: 'ftp://ftp.tvdr.de/vdr/{{ vdr_ver }}.tar.bz2'
+    dest: '{{ vdr_target_src_dir }}'
+    remote_src: true
+    
+- name: Install dependencies
+  apt:
+    name: '{{ item }}'
+    update_cache: true
+  with_items:
+    - build-essential
+    - libcap-dev
+    - libfontconfig1-dev
+    - gettext
+    - libncursesw5-dev
+    - libncurses5-dev
+    - libmagick++-dev
+    - libcxxtools-dev
+    - dialog
+    - dvb-apps
+    - libdvbcsa-dev
+    - libcrypto++-dev
+    - libssl-dev
+    - libsystemd-dev
+    
+- name: Copy VDR compile conf
+  copy:
+    src: './files/vdr/compile/Make.config'
+    dest: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
+     
+- name: Compile VDR
+  make: 
+    chdir: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
+    params:
+      NUM_THREADS: 3
+  
+- name: Clone VDR plugins
+  git:
+    dest: '{{ vdr_target_plugins_src }}/{{ item[0] }}'
+    repo: '{{ item[1] }}'
+  with_together:
+    - [ 'restfulapi', 'dvbapi', 'streamdev' ]
+    - [ 'https://github.com/yavdr/vdr-plugin-restfulapi.git', 'https://github.com/manio/vdr-plugin-dvbapi.git', 'git://projects.vdr-developer.org/vdr-plugin-streamdev.git' ]
+    
+- name: Compile VDR plugins
+  make: 
+    chdir: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
+    target: install-plugins
+    params:
+      NUM_THREADS: 3
+      LIBDVBCSA: 1
+
+ 
+    
+    

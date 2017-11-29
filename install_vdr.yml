@@ -1,0 +1,13 @@
+---
+# Compile and install VDR with it's dependencies
+- name: Install VDR with plugins and deps
+  hosts: receiver1
+  gather_facts: false
+  roles:
+    - vdr_install
+  vars:
+    vdr_ver: vdr-2.2.0
+    vdr_target_src_dir: /usr/local/src/VDR
+    vdr_target_plugins_src: '{{ vdr_target_src_dir }}/{{ vdr_ver }}/PLUGINS/src'
+    vdr_etc_conf: /etc/vdr/conf.d
+    vdr_lib_dir: /var/lib/vdr
