@@ -1,17 +1,5 @@
 ---
 # tasks file for vdr_install
-
-- name: Create VDR source dir
-  file:
-    path: '{{ vdr_target_src_dir }}'
-    state: directory
-    
-- name: Download and extract latest VDR
-  unarchive:
-    src: 'ftp://ftp.tvdr.de/vdr/{{ vdr_ver }}.tar.bz2'
-    dest: '{{ vdr_target_src_dir }}'
-    remote_src: true
-    
 - name: Install dependencies
   apt:
     name: '{{ item }}'
@@ -31,6 +19,35 @@
     - libcrypto++-dev
     - libssl-dev
     - libsystemd-dev
+    - python-pexpect
+
+- name: Transfer DVB-S adapter firmware
+  copy:
+    src: files/firmware/dvb-demod-m88ds3103.fw
+    dest: /lib/firmware
+    
+- name: Download DVB-C driver
+  get_url:
+    url: 'http://sundtek.de/media/sundtek_netinst.sh'
+    dest: /tmp
+    mode: 0775
+    
+- name: Install DVB-C driver
+  expect:
+   command: '/tmp/sundtek_netinst.sh'
+   responses:
+     Restriktionen verwendet werden: 'Y'
+    
+- name: Create VDR source dir
+  file:
+    path: '{{ vdr_target_src_dir }}'
+    state: directory
+    
+- name: Download and extract latest VDR
+  unarchive:
+    src: 'ftp://ftp.tvdr.de/vdr/{{ vdr_ver }}.tar.bz2'
+    dest: '{{ vdr_target_src_dir }}'
+    remote_src: true
     
 - name: Copy VDR compile conf
   copy:
