@@ -18,6 +18,11 @@
     that:
       - vdr_status.status.ActiveState == 'inactive'
     msg: 'Vdr service must be stopped'
+ 
+- name: Copy dvb-c frequencies file
+  copy: 
+    src: ./files/dvb_c/bg-Sprint
+    dest: '{{ cat_tv_freq_file }}'
     
 - name: Scan cat tv channels
   command: '/usr/bin/scan -a {{ dvb_c_adapter_number }} -o vdr {{ cat_tv_freq_file }} -U'

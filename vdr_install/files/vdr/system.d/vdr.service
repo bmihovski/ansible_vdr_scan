@@ -1,0 +1,12 @@
+[Unit]
+Description=Video Disc Recorder
+After=syslog.target network.target
+Requires=oscam.service
+
+[Service]
+#Environment=LANG=bg_BG
+ExecStart=/usr/local/bin/runvdr
+TimeoutSec=0
+
+[Install]
+WantedBy=multi-user.target

@@ -20,6 +20,7 @@
     - libssl-dev
     - libsystemd-dev
     - python-pexpect
+    - htop
 
 - name: Transfer DVB-S adapter firmware
   copy:
@@ -65,8 +66,9 @@
     dest: '{{ vdr_target_plugins_src }}/{{ item[0] }}'
     repo: '{{ item[1] }}'
   with_together:
-    - [ 'restfulapi', 'dvbapi', 'streamdev' ]
-    - [ 'https://github.com/yavdr/vdr-plugin-restfulapi.git', 'https://github.com/manio/vdr-plugin-dvbapi.git', 'git://projects.vdr-developer.org/vdr-plugin-streamdev.git' ]
+    - [ 'restfulapi', 'dvbapi', 'streamdev', vnsiserver ]
+    - [ 'https://github.com/yavdr/vdr-plugin-restfulapi.git', 'https://github.com/manio/vdr-plugin-dvbapi.git', 
+        'git://projects.vdr-developer.org/vdr-plugin-streamdev.git', 'https://github.com/FernetMenta/vdr-plugin-vnsiserver.git' ]
     
 - name: Compile VDR plugins
   make: 
@@ -75,7 +77,75 @@
     params:
       NUM_THREADS: 3
       LIBDVBCSA: 1
+      
+- name: Copy streamdev-server config
+  copy:
+    src: ./files/vdr/plugins/streamdev-server/
+    dest: '{{ vdr_lib_dir }}/plugins/'
 
- 
+- name: Copy vnsiserver config
+  copy:
+    src: ./files/vdr/plugins/vnsiserver/
+    dest: '{{ vdr_lib_dir }}/plugins/'
+    
+- name: Clone Oscam
+  git:
+    dest: '{{ oscam_src }}'
+    repo: 'git://repo.or.cz/oscam.git'
+    force: true
+    
+- name: Copy Oscam compile config
+  copy:
+    src: ./files/oscam/compile/config.h
+    dest: '{{ oscam_src }}'
+    
+- name: Compile oscam
+  make: 
+    chdir: '{{ oscam_src }}'
+    params:
+      NUM_THREADS: 3  
+      
+- name: Create oscam symlink
+  file:
+    src: '{{ oscam_src }}/Distribution/oscam-1.20-unstable_svn0-arm-linux-gnueabihf'
+    dest: /usr/local/bin/oscam
+    force: true
+    state: link
+    
+- name: Transfer oscam config
+  copy:
+    src: ./files/oscam/conf/
+    dest: /usr/loca/etc/
+    
+- name: Copy VDR executable script
+  copy:
+    src: ./files/vdr/run/runvdr
+    dest: /usr/local/bin/
+    mode: 0775
+    
+- name: Copy VDR startup config
+  copy:
+    src: ./files/vdr/conf.d/vdr.conf
+    dest: /etc/vdr/conf.d
+    
+- name: Copy VDR and Oscam system.d scripts
+  copy:
+    src: '{{ item }}'
+    dest: /etc/systemd/system
+  with_items:
+    - './files/oscam/system.d/oscam.service'
+    - './files/vdr/system.d/vdr.service'
+    
+- name: Reload systemd configuration
+  command: systemctl daemon-reload
+  
+- name: Start and enable VDR and Oscam
+  service:
+    name: '{{ item }}'
+    state: started
+    enabled: true
+  with_items:
+    - oscam
+    - vdr
     
     

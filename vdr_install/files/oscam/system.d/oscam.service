@@ -1,0 +1,10 @@
+[Unit]
+Description=OSCAM
+After=syslog.target network.target
+
+[Service]
+ExecStart=/usr/local/bin/oscam
+TimeoutSec=0
+
+[Install]
+WantedBy=multi-user.target
