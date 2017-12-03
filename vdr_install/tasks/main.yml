@@ -159,7 +159,7 @@
  
 - name: Create VDR startup config directory
   file:
-    path: /etc/vdr/
+    path: /etc/vdr/conf.d
     state: directory   
  
 - name: Copy VDR startup config
