@@ -150,14 +150,6 @@
   copy:
     src: files/oscam/conf/
     dest: /usr/local/etc/
-  with_items:
-    - oscam.conf
-    - oscam.dvbapi
-    - oscam.provid
-    - oscam.server
-    - oscam.services
-    - oscam.srvid2
-    - oscam.user
     
 - name: Copy VDR executable script
   copy:
