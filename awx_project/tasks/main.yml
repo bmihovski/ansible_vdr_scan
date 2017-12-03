@@ -1,0 +1,62 @@
+---
+# tasks file for awx_project{{ hostvars[{{ inventory_hostname }}]['ansible_ssh_host'] }}
+- name: Create an Inventory
+  tower_inventory:
+    description: An inventory to connect to receiver
+    name: '{{ inventory_name }}'
+    organization: Default
+    tower_host: '{{ awx_host }}'
+    tower_username: '{{ awx_username }}'
+    tower_password: '{{ awx_password }}'
+    tower_verify_ssl: false
+
+- name: Create {{ inventory_name }} host for the Inventory
+  tower_host:
+    name: "{{ hostvars['receiver1']['ansible_host'] }}"
+    description: 'Remote bastion connection'
+    inventory: '{{ inventory_name }}'
+    tower_host: '{{ awx_host }}'
+    tower_password: '{{ awx_password }}'
+    tower_username: '{{ awx_username }}'
+    tower_verify_ssl: false
+
+- name: Create Inventory group
+  tower_group:
+    name: '{{ inventory_group }}'
+    description: 'Group for receivers connection'
+    inventory: '{{ inventory_name }}'
+    update_on_launch: True
+    tower_host: '{{ awx_host }}'
+    tower_password: '{{ awx_password }}'
+    tower_username: '{{ awx_username }}'
+    tower_verify_ssl: false
+          
+- name: Create project
+  tower_project:
+    name: '{{ project_name }}'
+    organization: Default
+    scm_type: git
+    scm_credential: '{{ scm_credentials }}'
+    scm_update_on_launch: True
+    scm_url: 'https://github.com/bmihovski/ansible_vdr_scan.git'
+    tower_host: '{{ awx_host }}'
+    tower_password: '{{ awx_password }}'
+    tower_username: '{{ awx_username }}'
+    tower_verify_ssl: false
+        
+- name: Create job templates
+  tower_job_template:
+    inventory: '{{ inventory_name }}'
+    job_type: run
+    machine_credential: '{{ machine_credentials }}'
+    name: '{{ item.0 }}'
+    playbook: '{{ item.1 }}'
+    project: '{{ project_name }}'
+    tower_host: '{{ awx_host }}'
+    tower_password: '{{ awx_password }}'
+    tower_username: '{{ awx_username }}'
+    tower_verify_ssl: False
+  with_together:
+    - '{{ template_names }}'
+    - '{{ template_files }}'
+  

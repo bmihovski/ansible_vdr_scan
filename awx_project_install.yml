@@ -1,0 +1,8 @@
+---
+# Create AWX project
+- hosts: localhost
+  gather_facts: false
+  roles:
+    - awx_project
+  vars_files:
+    - ./awx_vars.yml

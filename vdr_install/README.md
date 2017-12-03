@@ -1,31 +1,45 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Automate the process of VDR and Oscam installation and configuration
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Ansible 2.1
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+vdr_ver: - (VDR version to be installed)
+vdr_target_src_dir: - (Where VDR source is located)
+vdr_target_plugins_src: - (Where VDR plugins source is located)
+vdr_etc_conf: - (Where VDR startup configuration located)
+vdr_lib_dir: - (Where VDR post installation libs are located)
+oscam_src: - (Where Oscam source is located)
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- name: Install VDR with plugins and deps
+  hosts: receiver1
+  gather_facts: false
+  roles:
+    - vdr_install
+  vars:
+    vdr_ver: vdr-2.2.0
+    vdr_target_src_dir: /usr/local/src/VDR
+    vdr_target_plugins_src: '{{ vdr_target_src_dir }}/{{ vdr_ver }}/PLUGINS/src'
+    vdr_etc_conf: /etc/vdr/conf.d
+    vdr_lib_dir: /var/lib/vdr
+    oscam_src: /usr/local/oscam
 
 License
 -------

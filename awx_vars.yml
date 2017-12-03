@@ -1,0 +1,20 @@
+---
+# Create configuration for vdr install and channels scan and AWX integration
+awx_host: 'http://192.168.99.100'
+awx_password: password
+awx_username: admin
+machine_credentials: 'receiver1'
+scm_credentials: 'github'
+template_names: [ 'Install VDR',
+                  'Scan channels',
+                ]
+template_files: [                
+                  'install_vdr.yml',
+                  'scan_channels.yml',
+                ]
+                 
+project_name: VDR
+inventory_name: receivers
+inventory_group: receiver1
+
+    
