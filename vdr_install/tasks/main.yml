@@ -115,12 +115,12 @@
 - name: Copy streamdev-server config
   copy:
     src: files/vdr/plugins/streamdev-server/
-    dest: '{{ vdr_lib_dir }}/plugins/'
+    dest: '{{ vdr_lib_dir }}/plugins/streamdev-server/'
 
 - name: Copy vnsiserver config
   copy:
     src: files/vdr/plugins/vnsiserver/
-    dest: '{{ vdr_lib_dir }}/plugins/'
+    dest: '{{ vdr_lib_dir }}/plugins/vnsiserver/'
     
 - name: Clone Oscam
   git:
@@ -149,7 +149,15 @@
 - name: Transfer oscam config
   copy:
     src: files/oscam/conf/
-    dest: /usr/loca/etc/
+    dest: /usr/local/etc/
+  with_items:
+    - oscam.conf
+    - oscam.dvbapi
+    - oscam.provid
+    - oscam.server
+    - oscam.services
+    - oscam.srvid2
+    - oscam.user
     
 - name: Copy VDR executable script
   copy:
