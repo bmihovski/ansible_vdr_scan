@@ -1,5 +1,10 @@
 ---
 # tasks file for vdr_install
+- name: Update apt cache
+  apt:
+    update_cache: true
+  ignore_errors: true
+
 - name: Install dependencies
   apt:
     name: '{{ item }}'
@@ -20,8 +25,21 @@
     - libssl-dev
     - libsystemd-daemon-dev
     - python-pexpect
+    - python-pip
     - htop
+    - macchanger
+    
+- name: Copy macchanger script in place
+  copy:
+    src: files/macchanger/macchanger
+    dest: /etc/network/if-pre-up.d/
+    mode: 0775
 
+- name: Upgrade pyexpect from pip
+  pip:
+    name: pyexpect
+    state: latest
+    
 - name: Transfer DVB-S adapter firmware
   copy:
     src: files/firmware/dvb-demod-m88ds3103.fw
@@ -54,12 +72,21 @@
   copy:
     src: './files/vdr/compile/Make.config'
     dest: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
-     
+
+- name: Cleanup VDR in case is already installed
+  make: 
+    chdir: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
+    target: clean
+    params:
+      NUM_THREADS: 3
+      LIBDVBCSA: 1
+    
 - name: Compile VDR
   make: 
     chdir: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
     params:
       NUM_THREADS: 3
+      LIBDVBCSA: 1
   
 - name: Clone VDR plugins
   git:
@@ -76,6 +103,13 @@
     target: install-plugins
     params:
       NUM_THREADS: 3
+      LIBDVBCSA: 1
+
+- name: Install VDR 
+  make: 
+    chdir: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
+    target: install
+    params:
       LIBDVBCSA: 1
       
 - name: Copy streamdev-server config
@@ -122,7 +156,12 @@
     src: ./files/vdr/run/runvdr
     dest: /usr/local/bin/
     mode: 0775
-    
+ 
+- name: Create VDR startup config directory
+  file:
+    path: /etc/vdr/
+    state: directory   
+ 
 - name: Copy VDR startup config
   copy:
     src: ./files/vdr/conf.d/vdr.conf
