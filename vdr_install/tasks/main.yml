@@ -18,7 +18,7 @@
     - libdvbcsa-dev
     - libcrypto++-dev
     - libssl-dev
-    - libsystemd-dev
+    - libsystemd-daemon-dev
     - python-pexpect
     - htop
 
