@@ -70,7 +70,7 @@
     
 - name: Copy VDR compile conf
   copy:
-    src: './files/vdr/compile/Make.config'
+    src: 'files/vdr/compile/Make.config'
     dest: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
 
 - name: Cleanup VDR in case is already installed
@@ -114,12 +114,12 @@
       
 - name: Copy streamdev-server config
   copy:
-    src: ./files/vdr/plugins/streamdev-server/
+    src: files/vdr/plugins/streamdev-server/
     dest: '{{ vdr_lib_dir }}/plugins/'
 
 - name: Copy vnsiserver config
   copy:
-    src: ./files/vdr/plugins/vnsiserver/
+    src: files/vdr/plugins/vnsiserver/
     dest: '{{ vdr_lib_dir }}/plugins/'
     
 - name: Clone Oscam
@@ -130,7 +130,7 @@
     
 - name: Copy Oscam compile config
   copy:
-    src: ./files/oscam/compile/config.h
+    src: files/oscam/compile/config.h
     dest: '{{ oscam_src }}'
     
 - name: Compile oscam
@@ -148,12 +148,12 @@
     
 - name: Transfer oscam config
   copy:
-    src: ./files/oscam/conf/
+    src: files/oscam/conf/
     dest: /usr/loca/etc/
     
 - name: Copy VDR executable script
   copy:
-    src: ./files/vdr/run/runvdr
+    src: files/vdr/run/runvdr
     dest: /usr/local/bin/
     mode: 0775
  
@@ -164,7 +164,7 @@
  
 - name: Copy VDR startup config
   copy:
-    src: ./files/vdr/conf.d/vdr.conf
+    src: files/vdr/conf.d/vdr.conf
     dest: /etc/vdr/conf.d
     
 - name: Copy VDR and Oscam system.d scripts
@@ -172,8 +172,8 @@
     src: '{{ item }}'
     dest: /etc/systemd/system
   with_items:
-    - './files/oscam/system.d/oscam.service'
-    - './files/vdr/system.d/vdr.service'
+    - 'files/oscam/system.d/oscam.service'
+    - 'files/vdr/system.d/vdr.service'
     
 - name: Reload systemd configuration
   command: systemctl daemon-reload
