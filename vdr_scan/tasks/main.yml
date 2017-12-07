@@ -16,7 +16,7 @@
 - name: Assert vdr service status inactive
   assert:
     that:
-      - vdr_status.status.ActiveState == 'inactive'
+      - vdr_status.state == 'stopped'
     msg: 'Vdr service must be stopped'
  
 - name: Copy dvb-c frequencies file
