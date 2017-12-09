@@ -119,6 +119,11 @@
   copy:
     src: files/vdr/plugins/vnsiserver/
     dest: '{{ vdr_lib_dir }}/plugins/vnsiserver/'
+
+- name: Copy vdr config
+  copy:
+    src: files/vdr/setup.conf
+    dest: '{{ vdr_lib_dir }}'
     
 - name: Clone Oscam
   git:
@@ -133,9 +138,7 @@
     
 - name: Compile oscam
   make: 
-    chdir: '{{ oscam_src }}'
-    params:
-      NUM_THREADS: 3  
+    chdir: '{{ oscam_src }}' 
       
 - name: Create oscam symlink
   file:
