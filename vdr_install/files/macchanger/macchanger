@@ -1,0 +1,3 @@
+#!/bin/sh
+# Set the mac address for eth0
+/usr/bin/macchanger --mac 1E:0B:FC:10:03:31 eth0
