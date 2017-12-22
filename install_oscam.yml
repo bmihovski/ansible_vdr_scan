@@ -1,0 +1,9 @@
+---
+# Compile and install Oscam
+- name: Install Oscam
+  hosts: receiver1
+  gather_facts: false
+  roles:
+    - oscam_install
+  vars:
+    oscam_src: /usr/local/src/oscam

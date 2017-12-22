@@ -125,32 +125,9 @@
     src: files/vdr/setup.conf
     dest: '{{ vdr_lib_dir }}'
     
-- name: Clone Oscam
-  git:
-    dest: '{{ oscam_src }}'
-    repo: 'git://repo.or.cz/oscam.git'
-    force: true
-    
-- name: Copy Oscam compile config
-  copy:
-    src: files/oscam/compile/config.h
-    dest: '{{ oscam_src }}'
-    
-- name: Compile oscam
-  make: 
-    chdir: '{{ oscam_src }}' 
-      
-- name: Create oscam symlink
-  file:
-    src: '{{ oscam_src }}/Distribution/oscam-1.20-unstable_svn0-arm-linux-gnueabihf'
-    dest: /usr/local/bin/oscam
-    force: true
-    state: link
-    
-- name: Transfer oscam config
-  copy:
-    src: files/oscam/conf/
-    dest: /usr/local/etc/
+- name: Install Oscam
+  include_role:
+    name: oscam_install
     
 - name: Copy VDR executable script
   copy:
@@ -165,22 +142,15 @@
     
 - name: Copy VDR and Oscam system.d scripts
   copy:
-    src: '{{ item }}'
+    src: 'files/vdr/system.d/vdr.service'
     dest: /etc/systemd/system
-  with_items:
-    - 'files/oscam/system.d/oscam.service'
-    - 'files/vdr/system.d/vdr.service'
     
 - name: Reload systemd configuration
   command: systemctl daemon-reload
   
 - name: Start and enable VDR and Oscam
   service:
-    name: '{{ item }}'
+    name: vdr
     state: started
     enabled: true
-  with_items:
-    - oscam
-    - vdr
-    
-    
+...    
