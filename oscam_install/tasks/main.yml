@@ -1,0 +1,54 @@
+---
+# tasks file for oscam_install
+- name: Check Oscam dir exisist
+  stat: 
+    path: '{{ oscam_src }}'
+  register: dir_to_delete
+
+- name: Clear previous Oscam installation if present
+  file:
+    path: '{{ oscam_src }}'
+    state: absent
+  when: dir_to_delete.stat.exists
+
+- name: Clone Oscam
+  git:
+    dest: '{{ oscam_src }}'
+    repo: 'git://repo.or.cz/oscam.git'
+    force: true
+    
+- name: Copy Oscam compile config
+  copy:
+    src: files/oscam/compile/config.h
+    dest: '{{ oscam_src }}'
+    
+- name: Compile oscam
+  make: 
+    chdir: '{{ oscam_src }}'
+      
+- name: Create oscam symlink
+  file:
+    src: '{{ oscam_src }}/Distribution/oscam-1.20-unstable_svn0-arm-linux-gnueabihf'
+    dest: /usr/local/bin/oscam
+    force: true
+    state: link
+    
+- name: Transfer oscam config
+  copy:
+    src: files/oscam/conf/
+    dest: /usr/local/etc/
+    
+- name: Copy Oscam system.d scripts
+  copy:
+    src: 'files/oscam/system.d/oscam.service'
+    dest: /etc/systemd/system
+
+- name: Reload systemd configuration
+  command: systemctl daemon-reload
+    
+- name: Start and enable VDR and Oscam
+  service:
+    name: oscam
+    state: started
+    enabled: true
+...

@@ -11,4 +11,4 @@
     vdr_target_plugins_src: '{{ vdr_target_src_dir }}/{{ vdr_ver }}/PLUGINS/src'
     vdr_etc_conf: /etc/vdr/conf.d
     vdr_lib_dir: /var/lib/vdr
-    oscam_src: /usr/local/oscam
+    oscam_src: /usr/local/src/oscam
