@@ -34,7 +34,7 @@
     dest: /root/vdr_king_of_sat
   
 - name: Run generate VDR channels from KingOfSat
-  shell: "cd /root/vdr_king_of_sat/; python getchannels.py -u -c bulsat.conf -l 39.0E -ot True"
+  shell: "cd /root/vdr_king_of_sat/; python getchannels.py -u -c bulgariasat.conf -l 1.9E -ot True"
   register: dvb_s_scan_results
  
 - name: Generate vdr channels from scanned results
@@ -51,7 +51,7 @@
     file_content_to_check: '{{ item }}'
   with_items:
     - ':[ Sprint ]'
-    - ':[ Bulsat ]'
+    - ':[ BulgariaSat ]'
 
 - name: Vdr start service to apply the new configuration
   service:
