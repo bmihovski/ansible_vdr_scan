@@ -24,7 +24,6 @@
     - libcrypto++-dev
     - libssl-dev
     - libsystemd-daemon-dev
-    - python-pexpect
     - python-pip
     - htop
     - macchanger
@@ -35,10 +34,9 @@
     dest: /etc/network/if-pre-up.d/
     mode: 0775
 
-- name: Upgrade pyexpect from pip
+- name: Install pyexpect from pip
   pip:
     name: pyexpect
-    state: latest
     
 - name: Transfer DVB-S adapter firmware
   copy:
