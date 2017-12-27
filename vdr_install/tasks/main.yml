@@ -54,56 +54,91 @@
    command: '/tmp/sundtek_netinst.sh'
    responses:
      Restriktionen verwendet werden: 'Y'
-    
-- name: Create VDR source dir
-  file:
-    path: '{{ vdr_target_src_dir }}'
-    state: directory
-    
+
 - name: Download and extract latest VDR
   unarchive:
     src: 'ftp://ftp.tvdr.de/vdr/{{ vdr_ver }}.tar.bz2'
-    dest: '{{ vdr_target_src_dir }}'
+    dest: '/usr/local/src/'
     remote_src: true
+    
+- name: Create symlink to VDR source
+  file:
+    src: '/usr/local/src/{{ vdr_ver }}'
+    dest: '{{ vdr_target_src_dir }}'
+    state: link
+    
+- name: Check extracted vdr is complete
+  stat:
+    path: '{{ vdr_target_src_dir }}/Make.config.template'
+  register: vdr_complete
+  
+- name: Assert vdr complete
+  assert:
+    that:
+      - vdr_complete.stat.exists
+    msg: 'VDR structure is malformed'
     
 - name: Copy VDR compile conf
   copy:
-    src: 'files/vdr/compile/Make.config'
-    dest: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
+    remote_src: true
+    src: '{{ vdr_target_src_dir }}/Make.config.template'
+    dest: '{{ vdr_target_src_dir }}/Make.config'
 
 - name: Cleanup VDR in case is already installed
   make: 
-    chdir: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
+    chdir: '{{ vdr_target_src_dir }}'
     target: clean
     params:
       LIBDVBCSA: 1
     
 - name: Compile VDR
   make: 
-    chdir: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
+    chdir: '{{ vdr_target_src_dir }}'
     params:
-      NUM_THREADS: 3
       LIBDVBCSA: 1
+
+- name: Download and extract latest VDR dvbapi
+  unarchive:
+    src: 'https://github.com/manio/vdr-plugin-dvbapi/archive/v{{ vdr_dvbapi_ver }}.tar.gz'
+    dest: '{{ vdr_target_plugins_src }}'
+    remote_src: true
+
+- name: Create symlink to VDR source
+  file:
+    src: '{{ vdr_target_plugins_src }}/vdr-plugin-dvbapi-{{ vdr_dvbapi_ver }}'
+    dest: '{{ vdr_target_plugins_src }}/dvbapi'
+    state: link
+    
+- name: Check extracted vdr dvbapi is complete
+  stat:
+    path: '{{ vdr_target_plugins_src }}/dvbapi/DVBAPI.cpp'
+  register: vdr_dvbapi_complete
+  
+- name: Assert vdr dvbapi complete
+  assert:
+    that:
+      - vdr_dvbapi_complete.stat.exists
+    msg: 'VDR dvbapi structure is malformed'
   
 - name: Clone VDR plugins
   git:
     dest: '{{ vdr_target_plugins_src }}/{{ item[0] }}'
     repo: '{{ item[1] }}'
   with_together:
-    - [ 'restfulapi', 'dvbapi', 'streamdev', vnsiserver ]
-    - [ 'https://github.com/yavdr/vdr-plugin-restfulapi.git', 'https://github.com/manio/vdr-plugin-dvbapi.git', 
-        'git://projects.vdr-developer.org/vdr-plugin-streamdev.git', 'https://github.com/FernetMenta/vdr-plugin-vnsiserver.git' ]
+    - [ 'restfulapi', 'streamdev', vnsiserver ]
+    - [ 'https://github.com/yavdr/vdr-plugin-restfulapi.git', 'git://projects.vdr-developer.org/vdr-plugin-streamdev.git',
+        'https://github.com/FernetMenta/vdr-plugin-vnsiserver.git' ]
     
 - name: Compile VDR plugins
   make: 
-    chdir: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
+    chdir: '{{ vdr_target_src_dir }}'
     target: install-plugins
     params:
       LIBDVBCSA: 1
 
 - name: Install VDR 
   make: 
-    chdir: '{{ vdr_target_src_dir }}/{{ vdr_ver }}'
+    chdir: '{{ vdr_target_src_dir }}'
     target: install
     params:
       LIBDVBCSA: 1
@@ -146,9 +181,57 @@
 - name: Reload systemd configuration
   command: systemctl daemon-reload
   
-- name: Start and enable VDR and Oscam
+- name: Start and enable VDR
   service:
     name: vdr
     state: started
     enabled: true
+
+- name: Wait 300 seconds for VDR port 3000 to become closed on the host, don't start checking for 10 seconds
+  wait_for:
+    port: 3000
+    delay: 10
+    state: started
+  
+- name: Stop VDR to proceed reconfiguration
+  service:
+    name: vdr
+    state: stopped
+    
+- name: Check filter file content
+  slurp:
+    src: '{{ vdr_lib_dir }}/setup.conf'
+  register: setup_conf_content
+  
+- name: Insert plugins config
+  blockinfile:
+    path: '{{ vdr_lib_dir }}/setup.conf'
+    block: |
+      dvbapi.LogLevel = 0
+      dvbapi.OSCamHost = 127.0.0.1
+      dvbapi.OSCamNetwork = 1
+      dvbapi.OSCamPort = 2000
+      streamdev-server.AllowSuspend = 1
+      streamdev-server.LiveBufferMs = 900
+      streamdev-server.StartServer = 0
+      streamdev-server.StartVTPServer = 0
+      streamdev-server.SuspendMode = 1
+    insertafter: 'ZapTimeout = 3'
+  when: "'dvbapi.LogLevel = 0' not in setup_conf_content.content | b64decode"
+
+- name: Check filter file content
+  slurp:
+    src: '{{ vdr_lib_dir }}/setup.conf'
+  register: setup_conf_content_applied
+
+- name: Assert filter content
+  assert:
+    that:
+      - "'dvbapi.LogLevel = 0' in setup_conf_content_applied.content | b64decode"
+    msg: 'File content must be as the expected'
+    
+- name: Start and enable VDR with new config
+  service:
+    name: vdr
+    state: started
 ...    
