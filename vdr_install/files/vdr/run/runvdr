@@ -45,7 +45,7 @@ KILL="/usr/bin/killall -q -TERM"
 # and return 0 if it *is* loaded, 1 if not:
 DriverLoaded()
 {
-  lsmod | grep -q sun8i_ths
+  lsmod | grep -q sun8i_codec_analog
 }
 
 # Load all DVB driver modules needed for your hardware:

@@ -38,10 +38,10 @@
   pip:
     name: pyexpect
     
-- name: Transfer DVB-S adapter firmware
-  copy:
-    src: files/firmware/dvb-demod-m88ds3103.fw
-    dest: /lib/firmware
+- name: Downloas DVB-S adapter firmware
+  get_url:
+    url: https://github.com/LibreELEC/dvb-firmware/raw/master/firmware/dvb-demod-m88ds3103.fw
+    dest: /lib/firmware/
     
 - name: Download DVB-C driver
   get_url:
@@ -152,11 +152,6 @@
   copy:
     src: files/vdr/plugins/vnsiserver/
     dest: '{{ vdr_lib_dir }}/plugins/vnsiserver/'
-
-- name: Copy vdr config
-  copy:
-    src: files/vdr/setup.conf
-    dest: '{{ vdr_lib_dir }}'
     
 - name: Install Oscam
   include_role:
@@ -173,7 +168,7 @@
     src: files/vdr/conf.d/vdr.conf
     dest: /etc/vdr/conf.d
     
-- name: Copy VDR and Oscam system.d scripts
+- name: Copy VDR system.d script
   copy:
     src: 'files/vdr/system.d/vdr.service'
     dest: /etc/systemd/system

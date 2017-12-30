@@ -46,7 +46,7 @@
 - name: Reload systemd configuration
   command: systemctl daemon-reload
     
-- name: Start and enable VDR and Oscam
+- name: Start and enable Oscam
   service:
     name: oscam
     state: started
