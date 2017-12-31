@@ -36,7 +36,7 @@
 
 - name: Install pyexpect from pip
   pip:
-    name: pyexpect
+    name: pexpect
     
 - name: Downloas DVB-S adapter firmware
   get_url:
@@ -197,6 +197,12 @@
   slurp:
     src: '{{ vdr_lib_dir }}/setup.conf'
   register: setup_conf_content
+  
+- name: Setup EPG fix level
+  replace:
+    path: '{{ vdr_lib_dir }}/setup.conf'
+    regexp: '^EPGBugfixLevel = 3$'
+    replace: 'EPGBugfixLevel = 0'
   
 - name: Insert plugins config
   blockinfile:
