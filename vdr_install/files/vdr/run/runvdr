@@ -45,7 +45,7 @@ KILL="/usr/bin/killall -q -TERM"
 # and return 0 if it *is* loaded, 1 if not:
 DriverLoaded()
 {
-  lsmod | grep -q sun8i_codec_analog
+  ps -ef | grep -q "/opt/bin/mediasrv -d --pluginpath=/opt/bin"
 }
 
 # Load all DVB driver modules needed for your hardware:
@@ -60,6 +60,7 @@ if ! DriverLoaded; then
    fi
 
 while (true) do
+      sleep 20
       eval "$VDRCMD"
       if test $? -eq 0 -o $? -eq 2; then exit; fi
       echo "`date` reloading DVB driver"
