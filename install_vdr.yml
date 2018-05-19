@@ -6,7 +6,7 @@
   roles:
     - vdr_install
   vars:
-    vdr_ver: vdr-2.2.0
+    vdr_ver: vdr-2.4.0
     vdr_dvbapi_ver: 2.2.4
     vdr_target_src_dir: /usr/local/src/VDR
     vdr_target_plugins_src: '{{ vdr_target_src_dir }}/PLUGINS/src'

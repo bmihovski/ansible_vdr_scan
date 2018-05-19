@@ -173,6 +173,11 @@
     src: 'files/vdr/system.d/vdr.service'
     dest: /etc/systemd/system
     
+- name: Copy VDR diseqc conf
+  copy:
+    src: 'files/vdr/lib/diseqc.conf'
+    dest: '{{ vdr_lib_dir }}'
+    
 - name: Reload systemd configuration
   command: systemctl daemon-reload
   
@@ -203,6 +208,12 @@
     path: '{{ vdr_lib_dir }}/setup.conf'
     regexp: '^EPGBugfixLevel = 3$'
     replace: 'EPGBugfixLevel = 0'
+
+- name: Enable Diseqc vdr setup
+  replace:
+    path: '{{ vdr_lib_dir }}/setup.conf'
+    regexp: '^DiSEqC = 0$'
+    replace: 'DiSEqC = 1'
   
 - name: Insert plugins config
   blockinfile:
@@ -229,6 +240,29 @@
   assert:
     that:
       - "'dvbapi.LogLevel = 0' in setup_conf_content_applied.content | b64decode"
+    msg: 'File content must be as the expected'
+
+- name: Assert diseqc enabled
+  assert:
+    that:
+      - "'DiSEqC = 1' in setup_conf_content_applied.content | b64decode"
+    msg: 'File content must be as the expected'
+ 
+- name: Insert Bulgaria sat to vdr sources
+  lineinfile:
+    path: '{{ vdr_lib_dir }}/sources.conf'
+    insertbefore: '^S3E     Eutelsat 3A/3D & Rascom 1R$'
+    line: 'S1.9E   Bulgariasat'
+    
+- name: Check filter file content of sources.conf
+  slurp:
+    src: '{{ vdr_lib_dir }}/sources.conf'
+  register: sources_conf_content_applied
+ 
+- name: Assert Bulgaria sat added
+  assert:
+    that:
+      - "'S1.9E   Bulgariasat' in sources_conf_content_applied.content | b64decode"
     msg: 'File content must be as the expected'
     
 - name: Start and enable VDR with new config
