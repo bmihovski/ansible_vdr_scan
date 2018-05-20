@@ -96,38 +96,15 @@
     chdir: '{{ vdr_target_src_dir }}'
     params:
       LIBDVBCSA: 1
-
-- name: Download and extract latest VDR dvbapi
-  unarchive:
-    src: 'https://github.com/manio/vdr-plugin-dvbapi/archive/v{{ vdr_dvbapi_ver }}.tar.gz'
-    dest: '{{ vdr_target_plugins_src }}'
-    remote_src: true
-
-- name: Create symlink to VDR source
-  file:
-    src: '{{ vdr_target_plugins_src }}/vdr-plugin-dvbapi-{{ vdr_dvbapi_ver }}'
-    dest: '{{ vdr_target_plugins_src }}/dvbapi'
-    state: link
-    
-- name: Check extracted vdr dvbapi is complete
-  stat:
-    path: '{{ vdr_target_plugins_src }}/dvbapi/DVBAPI.cpp'
-  register: vdr_dvbapi_complete
-  
-- name: Assert vdr dvbapi complete
-  assert:
-    that:
-      - vdr_dvbapi_complete.stat.exists
-    msg: 'VDR dvbapi structure is malformed'
   
 - name: Clone VDR plugins
   git:
     dest: '{{ vdr_target_plugins_src }}/{{ item[0] }}'
     repo: '{{ item[1] }}'
   with_together:
-    - [ 'restfulapi', 'streamdev', vnsiserver ]
+    - [ 'restfulapi', 'streamdev', 'vnsiserver', 'dvbapi' ]
     - [ 'https://github.com/yavdr/vdr-plugin-restfulapi.git', 'git://projects.vdr-developer.org/vdr-plugin-streamdev.git',
-        'https://github.com/FernetMenta/vdr-plugin-vnsiserver.git' ]
+        'https://github.com/FernetMenta/vdr-plugin-vnsiserver.git', 'https://github.com/manio/vdr-plugin-dvbapi.git' ]
     
 - name: Compile VDR plugins
   make: 
@@ -175,7 +152,7 @@
     
 - name: Copy VDR diseqc conf
   copy:
-    src: 'files/vdr/lib/diseqc.conf'
+    src: 'files/vdr/vdr_lib/diseqc.conf'
     dest: '{{ vdr_lib_dir }}'
     
 - name: Reload systemd configuration
