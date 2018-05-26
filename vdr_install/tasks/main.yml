@@ -191,6 +191,12 @@
     path: '{{ vdr_lib_dir }}/setup.conf'
     regexp: '^DiSEqC = 0$'
     replace: 'DiSEqC = 1'
+
+- name: Disable vdr channel scan
+  replace:
+    path: '{{ vdr_lib_dir }}/setup.conf'
+    regexp: '^UpdateChannels = 5$'
+    replace: 'UpdateChannels = 2'
   
 - name: Insert plugins config
   blockinfile:
