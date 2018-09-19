@@ -1,6 +1,7 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
+#define WITH_EMU 1
 #define WEBIF 1
 #define WEBIF_LIVELOG 1
 #define WEBIF_JQUERY 1
@@ -9,6 +10,7 @@
 #if defined(__linux__) || defined(__CYGWIN__)
 #define HAVE_DVBAPI 1
 #endif
+//#define WITH_NEUTRINO 1
 #define READ_SDT_CHARSETS 1
 //#define CLOCKFIX 1
 //#define IRDETO_GUESSING 1
@@ -31,7 +33,7 @@
 //#define MODULE_GBOX 1
 //#define MODULE_RADEGAST 1
 //#define MODULE_SERIAL 1
-#define MODULE_CONSTCW 1
+//#define MODULE_CONSTCW 1
 //#define MODULE_PANDORA 1
 //#define MODULE_GHTTP 1
 //#define MODULE_SCAM 1
@@ -41,15 +43,16 @@
 #ifdef WITH_CARDREADER
 
 //#define READER_NAGRA 1
+//#define READER_NAGRA_MERLIN 1
 //#define READER_IRDETO 1
 #define READER_CONAX 1
 //#define READER_CRYPTOWORKS 1
 //#define READER_SECA 1
-//#define READER_VIACCESS 1
+#define READER_VIACCESS 1
 //#define READER_VIDEOGUARD 1
-//#define READER_DRE 1
+#define READER_DRE 1
 //#define READER_TONGFANG 1
-#define READER_BULCRYPT 1
+//#define READER_BULCRYPT 1
 //#define READER_GRIFFIN 1
 //#define READER_DGCRYPT 1
 

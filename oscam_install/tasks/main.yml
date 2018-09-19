@@ -14,7 +14,7 @@
 - name: Clone Oscam
   git:
     dest: '{{ oscam_src }}'
-    repo: 'git://repo.or.cz/oscam.git'
+    repo: 'git://github.com/oscam-emu/oscam-patched.git'
     force: true
     
 - name: Copy Oscam compile config
@@ -28,7 +28,7 @@
       
 - name: Create oscam symlink
   file:
-    src: '{{ oscam_src }}/Distribution/oscam-1.20-unstable_svn0-arm-linux-gnueabihf'
+    src: '{{ oscam_src }}/Distribution/oscam-1.20_svn11432-x86_64-linux-gnu'
     dest: /usr/local/bin/oscam
     force: true
     state: link
