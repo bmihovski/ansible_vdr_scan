@@ -23,9 +23,10 @@
     - libdvbcsa-dev
     - libcrypto++-dev
     - libssl-dev
-    - libsystemd-daemon-dev
+    - libsystemd-dev
     - python-pip
     - htop
+    - nmon
     - macchanger
     
 - name: Copy macchanger script in place
