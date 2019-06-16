@@ -7,42 +7,30 @@
 
 - name: Install dependencies
   apt:
-    name: '{{ item }}'
     update_cache: true
-  with_items:
-    - build-essential
-    - libcap-dev
-    - libfontconfig1-dev
-    - gettext
-    - libncursesw5-dev
-    - libncurses5-dev
-    - libmagick++-dev
-    - libcxxtools-dev
-    - dialog
-    - dvb-apps
-    - libdvbcsa-dev
-    - libcrypto++-dev
-    - libssl-dev
-    - libsystemd-dev
-    - python-pip
-    - htop
-    - nmon
-    - macchanger
-    
-- name: Copy macchanger script in place
-  copy:
-    src: files/macchanger/macchanger
-    dest: /etc/network/if-pre-up.d/
-    mode: 0775
+    pkg:
+      - build-essential
+      - libcap-dev
+      - libfontconfig1-dev
+      - gettext
+      - libncursesw5-dev
+      - libncurses5-dev
+      - libmagick++-dev
+      - libcxxtools-dev
+      - dialog
+      - dvb-apps
+      - libdvbcsa-dev
+      - libcrypto++-dev
+      - libssl-dev
+      - libsystemd-dev
+      - python-pip
+      - htop
+      - nmon
+      - python-setuptools
 
 - name: Install pyexpect from pip
   pip:
     name: pexpect
-    
-- name: Downloas DVB-S adapter firmware
-  get_url:
-    url: https://github.com/LibreELEC/dvb-firmware/raw/master/firmware/dvb-demod-m88ds3103.fw
-    dest: /lib/firmware/
     
 - name: Download DVB-C driver
   get_url:
@@ -198,9 +186,9 @@
     path: '{{ vdr_lib_dir }}/setup.conf'
     block: |
       dvbapi.LogLevel = 0
-      dvbapi.OSCamHost = 127.0.0.1
+      dvbapi.OSCamHost = 95.216.142.249
       dvbapi.OSCamNetwork = 1
-      dvbapi.OSCamPort = 2000
+      dvbapi.OSCamPort = 53200
       streamdev-server.AllowSuspend = 1
       streamdev-server.LiveBufferMs = 900
       streamdev-server.StartServer = 0

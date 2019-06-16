@@ -28,7 +28,7 @@
       
 - name: Create oscam symlink
   file:
-    src: '{{ oscam_src }}/Distribution/oscam-1.20_svn11432-aarch64-linux-gnu'
+    src: '{{ oscam_src }}/Distribution/oscam-1.20_svn11523-aarch64-linux-gnu'
     dest: /usr/local/bin/oscam
     force: true
     state: link
