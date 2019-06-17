@@ -186,9 +186,9 @@
     path: '{{ vdr_lib_dir }}/setup.conf'
     block: |
       dvbapi.LogLevel = 0
-      dvbapi.OSCamHost = 95.216.142.249
+      dvbapi.OSCamHost = 127.0.0.1
       dvbapi.OSCamNetwork = 1
-      dvbapi.OSCamPort = 53200
+      dvbapi.OSCamPort = 2000
       streamdev-server.AllowSuspend = 1
       streamdev-server.LiveBufferMs = 900
       streamdev-server.StartServer = 0
