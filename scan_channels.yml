@@ -10,6 +10,6 @@
   vars:
     - cat_tv_freq_file: /usr/share/dvb/dvb-c/bg-Sprint
     - vdr_channels_conf_path: /var/lib/vdr/channels.conf
-    - dvb_c_adapter_number: 1
+    - dvb_c_adapter_number: 0
 
 
