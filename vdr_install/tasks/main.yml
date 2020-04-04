@@ -209,11 +209,11 @@
       - "'dvbapi.LogLevel = 0' in setup_conf_content_applied.content | b64decode"
     msg: 'File content must be as the expected'
 
-# - name: Assert diseqc enabled
-#   assert:
-#     that:
-#       - "'DiSEqC = 1' in setup_conf_content_applied.content | b64decode"
-#     msg: 'File content must be as the expected'
+- name: Assert diseqc enabled
+  assert:
+    that:
+      - "'DiSEqC = 1' in setup_conf_content_applied.content | b64decode"
+    msg: 'File content must be as the expected'
  
 - name: Insert Bulgaria sat to vdr sources
   lineinfile:
